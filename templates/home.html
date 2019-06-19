@@ -1,3 +1,119 @@
 {% extends "layout.html" %} {% block content %}
-<h1>Home Page</h1>
+<h1>Home</h1>
+<br/>
+
+<div class="col-md-8" , style="float:left;">
+    
+
+    <form name="distance" id="distance" method=POST action="">
+        <fieldset class="border p-2">
+            <legend class="w-auto"> Great-circle distance between two points </legend>
+            <p>Enter the souce and destination co-ordinates in the following format to calculate the distance between them. </p>
+            <ul class="list">
+                <!-- <li>deg-min-sec suffixed with N/S/E/W (e.g. 40°44′55″N, 73 59 11W)</li> -->
+                <li>signed decimal degrees without compass direction, where negative indicates west/south (e.g. 40.7486, -73.9864):
+                </li>
+            </ul>
+            <table class="inputs">
+                <tr>
+                    <td> Source: </td>
+                    <td>
+                        <input type="text" name="lat1" id="lat1" placeholder="Lat 1 (°N/S)" title="Lat 1 (°N/S)" required> ,
+                        <input type="text" name="lon1" id="lon1" placeholder="Lon 1 (°E/W)" title="Lon 1 (°E/W)" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Destination: </td>
+                    <td>
+                        <input type="text" name="lat2" id="lat2" placeholder="Lat 2 (°N/S)" title="Lat 2 (°N/S)" required> ,
+                        <input type="text" name="lon2" id="lon2" placeholder="Lon 2 (°E/W)" title="Lon 2 (°E/W)" required>
+                        <button onclick="haversine()" type='button' class='haversine-distance'>Go!</button>
+                        <p id="havfunction"></p>
+                    </td>
+                </tr>
+            </table>
+
+
+
+            <table class="outputs">
+                <tr>
+                    <td>Distance:</td>
+                    <td>
+                        <span id="result_distance"></span> km
+                        <span title="rounding to 4 significant figures reflects the approx. 0.3% accuracy of the spherical model" class="small grey">(to 4 significant figures)</span>
+                    </td>
+                </tr>
+            </table>
+            <p class="toggle-map"><a>View on map</a></p>
+            <p class="toggle-map hide"><a>... hide map</a></p>
+            <div id="map-ortho-dist-canvas" class="map hide"></div>
+        </fieldset>
+    </form>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    console.log("Script is connected")
+   
+    function haversine() {
+        console.log("Action form working...")
+        var lat1 = document.getElementById("lat1").value;
+        var lat2 = document.getElementById("lat2").value;
+        var lon1 = document.getElementById("lon1").value;
+        var lon2 = document.getElementById("lon2").value;
+
+        lat1 = parseInt(lat1, 10) * (Math.PI/180)
+        lat2 = parseInt(lat2, 10) * (Math.PI/180)
+        lon1 = parseInt(lon1, 10) * (Math.PI/180)
+        lon2 = parseInt(lon2, 10) * (Math.PI/180)
+
+        var dlon = lon2 - lon1;
+        var dlat = lat2 - lat1;
+
+        
+        const a = Math.sin(dlat / 2)**2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlon/2)**2;
+        const c = 2 * Math.asin(Math.sqrt(a))
+        const dd = 6371 * c;
+        d = Math.round(dd);
+        document.getElementById("result_distance").innerHTML = d;
+    }
+</script>
+
+
+<!-- <div class="col-md-4" style="float:right;">
+    <form name="details" id="details">
+        <fieldset class="border p-2">
+            <legend class="w-auto"> Flight details </legend>
+            <p>Enter the flight number to obtain the following flight details. </p>
+            <ul class="list">
+                <li>FLight Source</li>
+                <li>FLight Destination</li>
+                <li>Estimated Departure Time</li>
+                <li>Estimated Arrival Time</li>
+            </ul>
+            <table class="input">
+                <tr>
+                    <td>Flight Number: </td>
+                </tr>
+                <td><input type="text" name="flight-number" class="input" placeholder="AB123" title="Flight number:" required>
+                    <button type='button' class='Go!'>Go!</button>
+                    <input type="submit" value=Go!>
+                </td>
+
+            </table>
+            </br>
+            <p class="toggle-map"><a> View map</a></p>
+            <p class="toggle-map hide"><a>... hide map</a></p>
+            <div id="map-ortho-dist-canvas" class="map hide"></div>
+        </fieldset>
+
+    </form>
+</div>
+ -->
+
+<!--
+    <script nomodule>
+        window.location.replace('latlong-nomodule.html');
+    </script>
+    
+    [if lt IE 9]> <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script> <![endif]-->
 {% endblock content %}
